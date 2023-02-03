@@ -13,15 +13,15 @@ App features:
 
 1) Homepage:
 
-<a href="Homepage"><img src="https://github.com/KrishnaPandya-VGEC-IT/Personal-Expenses-App/blob/main/app_imgs/Img1.jpg" align="center" height="180" width="120" ></a>
+<a href="Homepage"><img src="https://github.com/KrishnaPandya-VGEC-IT/Personal-Expenses-App/blob/main/app_imgs/Img1.jpg" align="center" height="360" width="300" ></a>
 
 2) Add Transaction:
 
-<a href="Transaction"><img src="https://github.com/KrishnaPandya-VGEC-IT/Personal-Expenses-App/blob/main/app_imgs/Img2.jpg" align="center" height="180" width="120" ></a>
+<a href="Transaction"><img src="https://github.com/KrishnaPandya-VGEC-IT/Personal-Expenses-App/blob/main/app_imgs/Img2.jpg" align="center" height="360" width="300" ></a>
 
 3) Date picker:
 
-<a href="Datepicker"><img src="https://github.com/KrishnaPandya-VGEC-IT/Personal-Expenses-App/blob/main/app_imgs/Img3.jpg" align="center" height="180" width="120" ></a>
+<a href="Datepicker"><img src="https://github.com/KrishnaPandya-VGEC-IT/Personal-Expenses-App/blob/main/app_imgs/Img3.jpg" align="center" height="360" width="300" ></a>
 
 
 
