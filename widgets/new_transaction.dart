@@ -1,8 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-class NewTransaction extends StatefulWidget {
+class NewTransaction extends StatefulWidget
+{
   final Function addTx;
 
   NewTransaction(this.addTx);
@@ -11,49 +12,76 @@ class NewTransaction extends StatefulWidget {
   _NewTransactionState createState() => _NewTransactionState();
 }
 
-class _NewTransactionState extends State<NewTransaction> {
-
-
+class _NewTransactionState extends State<NewTransaction>
+{
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
-  DateTime _selectDate;
 
-  void _submitData()
+  DateTime _selectedDate;
+
+  void _submitData(String title, var Amount,BuildContext context)
   {
-    if(_amountController.text.isEmpty)
+    if(title=="")
       {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Please all Enter values!"),
+              duration: Duration(seconds: 2),)
+        );
         return;
       }
-    final enteredTitle = _titleController.text;
-    final enteredAmount = double.parse(_amountController.text);
-
-    if(enteredTitle.isEmpty || enteredAmount<=0 || _selectDate == null)
-    {
+    else if(double.tryParse(Amount)==null)
+      {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:Text("Amount should be value.(Kutrya sala dekh k number dial kar!Bevkuf sala.)"),
+            duration: Duration(seconds: 4),));
         return;
+      }
+    else if(_selectedDate == null)
+    {
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Date to choose karo, beta Goli!"),
+            duration: Duration(seconds: 2),)
+      );
+      return;
     }
-    widget.addTx(
-      enteredTitle,
-      enteredAmount,
-      _selectDate,
-    );
-
+    else if(double.parse(Amount)<=0) // Amount.runtimeType != double
+      {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Negative Amount not Possible.(Kutrya sala dekh k amount dial kar.)"),
+          duration: Duration(seconds: 4),
+        ));
+        return;
+      }
+    else if(double.parse(Amount)>1000000000)
+      {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Beta Aukat me reh k value add karo'),
+        duration: Duration(seconds: 2),));
+        return;
+      }
+    widget.addTx(title,double.parse(Amount),_selectedDate);
     Navigator.of(context).pop();
   }
 
-  void _presentDatePicker()
+  void _datePicker()
   {
-    showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2019), lastDate: DateTime.now()).then((pickedDate)
+    showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2021), lastDate: DateTime.now()).then((value)
     {
-      if(pickedDate == null)
+      if(value == null)
         {
           return;
         }
       else
         {
           setState(() {
-            _selectDate = pickedDate;
+            _selectedDate = value;
           });
-        }
+      }
     });
   }
 
@@ -62,48 +90,50 @@ class _NewTransactionState extends State<NewTransaction> {
     return Card(
       elevation: 5,
       child: Container(
+        margin: EdgeInsets.only(bottom: 90),
         padding: EdgeInsets.all(10),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              TextField(
-                decoration: InputDecoration(labelText: 'Name of Product'),
-                controller: _titleController,
-                onSubmitted: (_) => _submitData(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            TextField(
+              decoration: InputDecoration(labelText: 'Title'),
+              controller: _titleController,
+              // onChanged: (val) {
+              //   titleInput = val;
+              // },
+            ),
+            TextField(
+              decoration: InputDecoration(labelText: 'Amount'),
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              onSubmitted:  (_)
+                {
+                  _submitData(_titleController.text,_amountController.text,context);
+                }
+              // onChanged: (val) => amountInput = val,
+            ),
+            Container(
+              height: 100,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                 Text(_selectedDate == null?'No Date Chosen!': 'Picked Date : ${DateFormat.yMMMd().format(_selectedDate)}'),
+                 RaisedButton(
+                   color: Colors.purple,
+                     textColor: Colors.white,
+                     onPressed: (){
+                        _datePicker();
+                     }, child: Text('Choose Date',style: TextStyle(fontWeight: FontWeight.bold),))
+                ],
               ),
-              TextField(
-                  decoration: InputDecoration(labelText: 'Price'),
-                  controller: _amountController,
-                  keyboardType: TextInputType.number,
-                  onSubmitted: (_) => _submitData(),
-                  onChanged: (value) {} //=> amountInput = value,
-              ),
-              Container(
-                height: 70,
-                child: Row(children: [
-                  Expanded(child: Text(_selectDate == null? 'No Date Chosen' : 'Picked Date : ${DateFormat.yMd().format(_selectDate)}')),
-                  FlatButton(
-                      textColor: Colors.purple,
-                      onPressed: _presentDatePicker, child: Text('Choose date',
-                  style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),))
-                ],),
-              ),
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: RaisedButton(
-                    onPressed: _submitData,
-                      color: Colors.purple,
-                      child: Text(
-                      'Add Transaction',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
-                    )),
-              )
-            ],
-          ),
+            ),
+            RaisedButton(
+              child: Text('Add Transaction'),
+              color: Colors.purple,
+              textColor: Colors.white,
+              onPressed: () => _submitData(_titleController.text,_amountController.text,context),
+            ),
+          ],
         ),
       ),
     );
